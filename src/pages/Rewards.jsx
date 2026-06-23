@@ -78,7 +78,7 @@ const Rewards = () => {
 
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem', alignItems: 'start' }}>
+      <div className="dashboard-grid" style={{ gap: '2.5rem' }}>
         
         {/* Left Column: Spin the Wheel widget */}
         <div>
