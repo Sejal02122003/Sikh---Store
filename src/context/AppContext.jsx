@@ -247,8 +247,17 @@ export const AppProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
+  // User Authentication State
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
   // User Role State
-  const [userRole, setUserRole] = useState('customer'); // customer, vendor, admin
+  const [userRole, setUserRole] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_user');
+    return saved ? JSON.parse(saved).role : 'customer';
+  });
 
   const [isRegisteredSeller, setIsRegisteredSeller] = useState(() => {
     return localStorage.getItem('sikh_street_is_registered_seller') === 'true';
@@ -364,6 +373,7 @@ export const AppProvider = ({ children }) => {
   }, [coupons]);
 
   useEffect(() => {
+<<<<<<< HEAD
     localStorage.setItem('sikh_street_vendors', JSON.stringify(vendors));
   }, [vendors]);
 
@@ -386,6 +396,14 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('sikh_street_admin_rules', JSON.stringify(adminRules));
   }, [adminRules]);
+=======
+    if (user) {
+      localStorage.setItem('sikh_street_user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('sikh_street_user');
+    }
+  }, [user]);
+>>>>>>> 4d565ac711f54cdc854fea580dd553d4a616309f
 
   // Dynamic router setter helper
   const setRoute = (tab, productId = null) => {
@@ -451,6 +469,41 @@ export const AppProvider = ({ children }) => {
       return true;
     }
     return false;
+  };
+
+  // Auth actions
+  const login = (email, password) => {
+    // Mock login logic
+    const mockUser = {
+      id: Date.now(),
+      name: email.split('@')[0],
+      email,
+      role: email.includes('vendor') ? 'vendor' : (email.includes('admin') ? 'admin' : 'customer')
+    };
+    setUser(mockUser);
+    setUserRole(mockUser.role);
+    setRoute(mockUser.role === 'vendor' ? 'vendor' : (mockUser.role === 'admin' ? 'admin' : 'home'));
+    return true;
+  };
+
+  const signup = (name, email, password, isVendor) => {
+    // Mock signup logic
+    const mockUser = {
+      id: Date.now(),
+      name,
+      email,
+      role: isVendor ? 'vendor' : 'customer'
+    };
+    setUser(mockUser);
+    setUserRole(mockUser.role);
+    setRoute(mockUser.role === 'vendor' ? 'vendor' : 'home');
+    return true;
+  };
+
+  const logout = () => {
+    setUser(null);
+    setUserRole('customer');
+    setRoute('home');
   };
 
   // Vendor actions
@@ -576,6 +629,10 @@ export const AppProvider = ({ children }) => {
         removeFromCart,
         updateCartQuantity,
         clearCart,
+        user,
+        login,
+        signup,
+        logout,
         userRole,
         setUserRole,
         currency,
