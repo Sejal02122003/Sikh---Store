@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
 import { ShoppingCart, Coins, User, Globe, ChevronDown, Sparkles, Menu, X, Home, ShoppingBag } from 'lucide-react';
 
@@ -21,6 +21,19 @@ const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const totalCartItems = cart.reduce((total, item) => total + item.quantity, 0);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        closeSidebar();
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.body.classList.remove('no-scroll');
+    };
+  }, []);
 
   const toggleSidebar = () => {
     const nextState = !isSidebarOpen;

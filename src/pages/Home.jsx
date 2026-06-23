@@ -50,7 +50,7 @@ const Home = () => {
               Modern • Gamified • Multi-Country
             </div>
             
-            <h2 style={{ fontSize: '3.2rem', color: '#FFFFFF', fontWeight: '800', lineHeight: '1.15', letterSpacing: '-1px' }}>
+            <h2 className="hero-title">
               Elevate Your Identity with <span style={{ color: 'var(--color-gold)', background: 'linear-gradient(to right, #FFE082, #D4AF37)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Sikh Street</span>
             </h2>
             
@@ -184,15 +184,7 @@ const Home = () => {
       {/* 3. Rewards Banner Callout */}
       <section className="container" style={{ margin: '2rem auto' }}>
         <div 
-          className="card card-gold flex-between" 
-          style={{ 
-            padding: '2.5rem', 
-            borderRadius: 'var(--border-radius-lg)', 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-            gap: '2.5rem', 
-            alignItems: 'center' 
-          }}
+          className="card card-gold rewards-banner"
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div className="badge badge-gold" style={{ alignSelf: 'flex-start' }}>
