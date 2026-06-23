@@ -105,7 +105,7 @@ const VendorDashboard = () => {
       </div>
 
       {/* Main content grid split */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '2rem', alignItems: 'start' }}>
+      <div className="dashboard-grid">
         
         {/* Left Column: Active Inventory items */}
         <div className="card" style={{ padding: '1.5rem' }}>
@@ -132,30 +132,21 @@ const VendorDashboard = () => {
               {vendorProducts.map((p) => (
                 <div 
                   key={p.id}
-                  style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '60px 1fr 100px 100px', 
-                    gap: '1rem', 
-                    alignItems: 'center',
-                    padding: '0.75rem',
-                    background: 'var(--color-bg)',
-                    border: '1px solid var(--color-beige-dark)',
-                    borderRadius: 'var(--border-radius-sm)'
-                  }}
+                  className="inventory-item-grid"
                 >
-                  <div style={{ height: '60px', borderRadius: '4px', overflow: 'hidden', background: 'var(--color-navy)' }}>
+                  <div className="inventory-img-wrapper">
                     {getProductSvg(p.category, p.title, p.themeColor)}
                   </div>
-                  <div>
+                  <div className="inventory-title-wrapper">
                     <h4 style={{ fontSize: '0.9rem', fontWeight: '800' }}>{p.title}</h4>
                     <span className="badge badge-gold" style={{ fontSize: '0.65rem', marginTop: '0.15rem' }}>{p.category}</span>
                   </div>
-                  <div>
-                    <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Price</p>
+                  <div className="inventory-stat-col">
+                    <p className="inventory-stat-label">Price</p>
                     <p style={{ fontSize: '0.9rem', fontWeight: '800' }}>{convertPrice(p.price)}</p>
                   </div>
-                  <div>
-                    <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Stock</p>
+                  <div className="inventory-stat-col">
+                    <p className="inventory-stat-label">Stock</p>
                     <p style={{ fontSize: '0.9rem', fontWeight: '800', color: p.stock > 5 ? 'var(--color-success)' : 'var(--color-error)' }}>
                       {p.stock} units
                     </p>

@@ -141,15 +141,14 @@ const Cart = () => {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 0.8fr', gap: '2rem', alignItems: 'start' }}>
+        <div className="dashboard-grid">
           
           {/* Left: Cart Items List */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {cart.map((item, idx) => (
               <div 
                 key={idx}
-                className="card"
-                style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px 40px', gap: '1.25rem', alignItems: 'center' }}
+                className="card cart-item-grid"
               >
                 {/* Image */}
                 <div style={{ height: '80px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', background: 'var(--color-navy)' }}>

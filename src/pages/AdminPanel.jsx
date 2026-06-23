@@ -87,7 +87,7 @@ const AdminPanel = () => {
 
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '2rem', alignItems: 'start' }}>
+      <div className="dashboard-grid">
         
         {/* Left column: Admin config form */}
         <div className="card" style={{ padding: '1.5rem' }}>
