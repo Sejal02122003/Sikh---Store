@@ -13,7 +13,11 @@ import Rewards from './pages/Rewards';
 import VendorDashboard from './pages/VendorDashboard';
 import InventoryManagement from './pages/InventoryManagement';
 import AdminPanel from './pages/AdminPanel';
+<<<<<<< HEAD
 import VendorRegistration from './pages/VendorRegistration';
+=======
+import Auth from './pages/Auth';
+>>>>>>> 4d565ac711f54cdc854fea580dd553d4a616309f
 
 import './App.css';
 
@@ -39,8 +43,13 @@ const AppContent = () => {
         return <InventoryManagement />;
       case 'admin':
         return <AdminPanel />;
+<<<<<<< HEAD
       case 'vendor-register':
         return <VendorRegistration />;
+=======
+      case 'auth':
+        return <Auth />;
+>>>>>>> 4d565ac711f54cdc854fea580dd553d4a616309f
       default:
         return <Home />;
     }
