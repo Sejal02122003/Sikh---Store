@@ -75,7 +75,7 @@ const RewardsWheel = () => {
       </div>
 
       {/* Wheel Wrapper */}
-      <div style={{ position: 'relative', width: '280px', height: '280px', margin: '1rem 0' }}>
+      <div className="wheel-container">
         {/* Pointer Arrow */}
         <div style={{
           position: 'absolute',
