@@ -208,6 +208,7 @@ const VendorDashboard = () => {
 
       </div>
 
+<<<<<<< HEAD
       {/* Tabs navigation */}
       <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid var(--color-beige-dark)', marginBottom: '2rem', overflowX: 'auto', paddingBottom: '0.5rem' }}>
         {[
@@ -334,6 +335,14 @@ const VendorDashboard = () => {
       {activeSubTab === 'products' && (
         <div className="card page-fade-in" style={{ padding: '1.5rem' }}>
           <div className="flex-between" style={{ marginBottom: '1.5rem', borderBottom: '1px solid var(--color-beige-dark)', paddingBottom: '0.75rem' }}>
+=======
+      {/* Main content grid split */}
+      <div className="dashboard-grid">
+        
+        {/* Left Column: Active Inventory items */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <div className="flex-between" style={{ marginBottom: '1.25rem', borderBottom: '1px solid var(--color-beige-dark)', paddingBottom: '0.75rem' }}>
+>>>>>>> 4d565ac711f54cdc854fea580dd553d4a616309f
             <h3 style={{ fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
               <Store size={18} style={{ color: 'var(--color-gold-hover)' }} />
               Marketplace Listings Index
@@ -354,20 +363,29 @@ const VendorDashboard = () => {
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {vendorProducts.map((p) => (
+<<<<<<< HEAD
                 <div key={p.id} style={{ display: 'grid', gridTemplateColumns: '60px 1fr 100px 100px 120px', gap: '1.5rem', alignItems: 'center', padding: '0.75rem', background: 'var(--color-bg)', border: '1px solid var(--color-beige-dark)', borderRadius: 'var(--border-radius-sm)' }}>
                   <div style={{ height: '60px', background: 'var(--color-navy)', borderRadius: '4px', overflow: 'hidden' }}>
                     {renderProductImage(p)}
+=======
+                <div 
+                  key={p.id}
+                  className="inventory-item-grid"
+                >
+                  <div className="inventory-img-wrapper">
+                    {getProductSvg(p.category, p.title, p.themeColor)}
+>>>>>>> 4d565ac711f54cdc854fea580dd553d4a616309f
                   </div>
-                  <div>
+                  <div className="inventory-title-wrapper">
                     <h4 style={{ fontSize: '0.9rem', fontWeight: '800' }}>{p.title}</h4>
                     <span className="badge badge-gold" style={{ fontSize: '0.65rem', marginTop: '0.15rem' }}>{p.category}</span>
                   </div>
-                  <div>
-                    <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Price</p>
+                  <div className="inventory-stat-col">
+                    <p className="inventory-stat-label">Price</p>
                     <p style={{ fontSize: '0.9rem', fontWeight: '800' }}>{convertPrice(p.price)}</p>
                   </div>
-                  <div>
-                    <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase' }}>Stock</p>
+                  <div className="inventory-stat-col">
+                    <p className="inventory-stat-label">Stock</p>
                     <p style={{ fontSize: '0.9rem', fontWeight: '800', color: p.stock > 5 ? 'var(--color-success)' : 'var(--color-error)' }}>
                       {p.stock} units
                     </p>

@@ -42,7 +42,7 @@ const Home = () => {
         <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%)' }}></div>
         <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '450px', height: '450px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }}></div>
 
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '3rem', alignItems: 'center' }}>
+        <div className="container hero-grid">
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 5 }}>
             <div className="badge badge-gold" style={{ alignSelf: 'flex-start', padding: '0.4rem 0.8rem' }}>
@@ -50,7 +50,7 @@ const Home = () => {
               Modern • Gamified • Multi-Country
             </div>
             
-            <h2 style={{ fontSize: '3.2rem', color: '#FFFFFF', fontWeight: '800', lineHeight: '1.15', letterSpacing: '-1px' }}>
+            <h2 className="hero-title">
               Elevate Your Identity with <span style={{ color: 'var(--color-gold)', background: 'linear-gradient(to right, #FFE082, #D4AF37)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Sikh Street</span>
             </h2>
             
@@ -58,7 +58,7 @@ const Home = () => {
               Discover handcrafted Kada accessories, premium double-width Voile turbans, historical literature, and traditional apparel. Supporting verified global artisan vendors.
             </p>
 
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+            <div className="hero-actions">
               <button onClick={() => setRoute('catalog')} className="btn btn-gold btn-lg">
                 Shop the Catalog
                 <ArrowRight size={18} />
@@ -184,15 +184,7 @@ const Home = () => {
       {/* 3. Rewards Banner Callout */}
       <section className="container" style={{ margin: '2rem auto' }}>
         <div 
-          className="card card-gold flex-between" 
-          style={{ 
-            padding: '2.5rem', 
-            borderRadius: 'var(--border-radius-lg)', 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-            gap: '2.5rem', 
-            alignItems: 'center' 
-          }}
+          className="card card-gold rewards-banner"
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <div className="badge badge-gold" style={{ alignSelf: 'flex-start' }}>
