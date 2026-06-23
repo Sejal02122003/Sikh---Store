@@ -11,7 +11,9 @@ const Navbar = () => {
     setUserRole, 
     currency, 
     setCurrency, 
-    coins 
+    coins,
+    user,
+    logout
   } = useContext(AppContext);
 
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
@@ -214,72 +216,85 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Role Switcher Dropdown (Demo Purpose) */}
+            {/* User Profile / Login */}
             <div className="hide-on-mobile" style={{ position: 'relative' }}>
-              <button 
-                onClick={() => { setRoleDropdownOpen(!roleDropdownOpen); setCurrencyDropdownOpen(false); }}
-                className="btn btn-primary btn-sm"
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '0.4rem', 
-                  backgroundColor: userRole === 'admin' ? 'var(--color-gold)' : userRole === 'vendor' ? 'var(--color-navy-light)' : 'var(--color-navy)',
-                  color: userRole === 'admin' ? 'var(--color-navy-dark)' : 'var(--color-text-light)',
-                  border: userRole === 'admin' ? '1px solid var(--color-gold)' : 'none'
-                }}
-              >
-                <User size={15} />
-                <span style={{ textTransform: 'capitalize' }}>{userRole}</span>
-                <ChevronDown size={12} />
-              </button>
-
-              {roleDropdownOpen && (
-                <div 
-                  className="card"
-                  style={{ 
-                    position: 'absolute', 
-                    top: '100%', 
-                    right: 0, 
-                    marginTop: '0.5rem', 
-                    zIndex: 200, 
-                    width: '240px', 
-                    padding: '0.75rem', 
-                    display: 'flex', 
-                    flexDirection: 'column', 
-                    gap: '0.5rem' 
-                  }}
+              {!user ? (
+                <button 
+                  onClick={() => setRoute('auth')}
+                  className="btn btn-primary btn-sm"
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', backgroundColor: 'var(--color-gold)', color: 'var(--color-navy-dark)', border: 'none' }}
                 >
-                  <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--color-text-secondary)', padding: '0 0.5rem 0.25rem 0.5rem', borderBottom: '1px solid var(--color-beige-dark)' }}>
-                    Switch Role Profile
-                  </div>
-                  {roles.map(role => (
-                    <button
-                      key={role.id}
-                      onClick={() => {
-                        setUserRole(role.id);
-                        setRoleDropdownOpen(false);
-                        if (role.id === 'vendor') setRoute('vendor');
-                        else if (role.id === 'admin') setRoute('admin');
-                        else setRoute('home');
-                      }}
-                      className="btn btn-sm"
+                  <User size={15} />
+                  <span>Log In / Sign Up</span>
+                </button>
+              ) : (
+                <>
+                  <button 
+                    onClick={() => { setRoleDropdownOpen(!roleDropdownOpen); setCurrencyDropdownOpen(false); }}
+                    className="btn btn-primary btn-sm"
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '0.4rem', 
+                      backgroundColor: userRole === 'admin' ? 'var(--color-gold)' : userRole === 'vendor' ? 'var(--color-navy-light)' : 'var(--color-navy)',
+                      color: userRole === 'admin' ? 'var(--color-navy-dark)' : 'var(--color-text-light)',
+                      border: userRole === 'admin' ? '1px solid var(--color-gold)' : 'none'
+                    }}
+                  >
+                    <User size={15} />
+                    <span style={{ textTransform: 'capitalize', maxWidth: '100px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.name}</span>
+                    <ChevronDown size={12} />
+                  </button>
+
+                  {roleDropdownOpen && (
+                    <div 
+                      className="card"
                       style={{ 
-                        flexDirection: 'column',
-                        alignItems: 'flex-start',
-                        justifyContent: 'center', 
-                        background: userRole === role.id ? 'rgba(15, 30, 54, 0.05)' : 'transparent',
-                        color: 'var(--color-navy)',
-                        width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: 'var(--border-radius-sm)',
-                        border: userRole === role.id ? '1px solid var(--color-beige-dark)' : '1px solid transparent'
+                        position: 'absolute', 
+                        top: '100%', 
+                        right: 0, 
+                        marginTop: '0.5rem', 
+                        zIndex: 200, 
+                        width: '240px', 
+                        padding: '0.75rem', 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '0.5rem' 
                       }}
                     >
-                      <span style={{ fontWeight: '700', fontSize: '0.85rem' }}>{role.name}</span>
-                      <span style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>{role.desc}</span>
-                    </button>
-                  ))}
-                </div>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', color: 'var(--color-text-secondary)', padding: '0 0.5rem 0.25rem 0.5rem', borderBottom: '1px solid var(--color-beige-dark)' }}>
+                        {user.role} Profile
+                      </div>
+                      <div style={{ padding: '0.5rem', fontSize: '0.85rem', color: 'var(--color-navy)', wordBreak: 'break-all', fontWeight: '500' }}>
+                        {user.email}
+                      </div>
+                      
+                      {userRole === 'vendor' && (
+                         <button onClick={() => { setRoute('vendor'); setRoleDropdownOpen(false); }} className="btn btn-sm" style={{ justifyContent: 'flex-start', background: 'var(--color-card-bg)', color: 'var(--color-navy)', border: '1px solid var(--color-beige-dark)' }}>Vendor Dashboard</button>
+                      )}
+                      {userRole === 'admin' && (
+                         <button onClick={() => { setRoute('admin'); setRoleDropdownOpen(false); }} className="btn btn-sm" style={{ justifyContent: 'flex-start', background: 'var(--color-card-bg)', color: 'var(--color-navy)', border: '1px solid var(--color-beige-dark)' }}>Admin Console</button>
+                      )}
+                      
+                      <button
+                        onClick={() => {
+                          logout();
+                          setRoleDropdownOpen(false);
+                        }}
+                        className="btn btn-sm"
+                        style={{ 
+                          justifyContent: 'center', 
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          color: '#EF4444',
+                          width: '100%',
+                          marginTop: '0.5rem'
+                        }}
+                      >
+                        <span style={{ fontWeight: '700' }}>Log Out</span>
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
@@ -417,38 +432,46 @@ const Navbar = () => {
 
           <div className="sidebar-divider" />
 
-          {/* User Role Switcher inside Sidebar */}
+          {/* User Profile inside Sidebar */}
           <div>
-            <div className="sidebar-section-title">Select Profile View</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {roles.map(role => (
-                <button
-                  key={role.id}
-                  onClick={() => {
-                    setUserRole(role.id);
-                    closeSidebar();
-                    if (role.id === 'vendor') setRoute('vendor');
-                    else if (role.id === 'admin') setRoute('admin');
-                    else setRoute('home');
-                  }}
-                  className="btn btn-sm"
-                  style={{ 
-                    flexDirection: 'column',
-                    alignItems: 'flex-start',
-                    justifyContent: 'center', 
-                    background: userRole === role.id ? 'rgba(158, 35, 70, 0.08)' : 'var(--color-card-bg)',
-                    color: 'var(--color-navy)',
-                    width: '100%',
-                    padding: '0.6rem 0.85rem',
-                    borderRadius: 'var(--border-radius-sm)',
-                    border: userRole === role.id ? '1px solid var(--color-gold)' : '1px solid var(--color-beige-dark)'
-                  }}
+            <div className="sidebar-section-title">Account</div>
+            {!user ? (
+               <button
+                  onClick={() => { setRoute('auth'); closeSidebar(); }}
+                  className="btn btn-primary"
+                  style={{ width: '100%', display: 'flex', justifyContent: 'center', backgroundColor: 'var(--color-gold)', color: 'var(--color-navy-dark)' }}
                 >
-                  <span style={{ fontWeight: '700', fontSize: '0.85rem', color: userRole === role.id ? 'var(--color-navy-light)' : 'var(--color-navy)' }}>{role.name}</span>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>{role.desc}</span>
+                  Log In / Sign Up
                 </button>
-              ))}
-            </div>
+            ) : (
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  <div style={{ padding: '0.6rem 0.85rem', background: 'var(--color-card-bg)', borderRadius: 'var(--border-radius-sm)', border: '1px solid var(--color-beige-dark)' }}>
+                    <div style={{ fontWeight: '700', color: 'var(--color-navy)' }}>{user.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', textTransform: 'capitalize' }}>{user.role} Profile</div>
+                  </div>
+                  
+                  {userRole === 'vendor' && (
+                     <button onClick={() => { setRoute('vendor'); closeSidebar(); }} className="btn btn-sm" style={{ justifyContent: 'center', border: '1px solid var(--color-beige-dark)', color: 'var(--color-navy)' }}>Vendor Dashboard</button>
+                  )}
+                  {userRole === 'admin' && (
+                     <button onClick={() => { setRoute('admin'); closeSidebar(); }} className="btn btn-sm" style={{ justifyContent: 'center', border: '1px solid var(--color-beige-dark)', color: 'var(--color-navy)' }}>Admin Console</button>
+                  )}
+
+                  <button
+                    onClick={() => { logout(); closeSidebar(); }}
+                    className="btn btn-sm"
+                    style={{ 
+                      justifyContent: 'center', 
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#EF4444',
+                      border: '1px solid transparent',
+                      marginTop: '0.5rem'
+                    }}
+                  >
+                    <span style={{ fontWeight: '700' }}>Log Out</span>
+                  </button>
+               </div>
+            )}
           </div>
 
         </div>

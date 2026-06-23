@@ -12,6 +12,7 @@ import Rewards from './pages/Rewards';
 import VendorDashboard from './pages/VendorDashboard';
 import InventoryManagement from './pages/InventoryManagement';
 import AdminPanel from './pages/AdminPanel';
+import Auth from './pages/Auth';
 
 import './App.css';
 
@@ -37,6 +38,8 @@ const AppContent = () => {
         return <InventoryManagement />;
       case 'admin':
         return <AdminPanel />;
+      case 'auth':
+        return <Auth />;
       default:
         return <Home />;
     }
