@@ -132,6 +132,16 @@ const Auth = () => {
               </span>
             </div>
           )}
+
+          {/* Quick Demo Login */}
+          <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-beige-dark)', textAlign: 'center' }}>
+            <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>Quick Demo Access</p>
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+               <button type="button" onClick={() => { setEmail('customer@demo.com'); login('customer@demo.com', 'password'); }} className="btn btn-sm" style={{ flex: 1, background: 'var(--color-beige-light)', color: 'var(--color-navy)', border: '1px solid var(--color-beige-dark)', padding: '0.5rem', fontSize: '0.8rem' }}>Customer</button>
+               <button type="button" onClick={() => { setEmail('vendor@demo.com'); login('vendor@demo.com', 'password'); }} className="btn btn-sm" style={{ flex: 1, background: 'var(--color-navy-light)', color: '#FFF', border: 'none', padding: '0.5rem', fontSize: '0.8rem' }}>Vendor</button>
+               <button type="button" onClick={() => { setEmail('admin@demo.com'); login('admin@demo.com', 'password'); }} className="btn btn-sm" style={{ flex: 1, background: 'var(--color-gold)', color: 'var(--color-navy-dark)', border: 'none', padding: '0.5rem', fontSize: '0.8rem', fontWeight: '700' }}>Admin</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
