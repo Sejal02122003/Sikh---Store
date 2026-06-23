@@ -43,7 +43,7 @@ const Catalog = () => {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '2rem' }}>
+      <div className="catalog-grid">
         
         {/* Sidebar Filter Panel */}
         <aside style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignSelf: 'flex-start' }}>
