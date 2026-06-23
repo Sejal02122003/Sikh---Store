@@ -19,19 +19,19 @@ const Home = () => {
 
   const categories = [
     { name: 'Turbans', count: '12+ Fabrics', desc: 'Premium Voile & Rubia' },
-    { name: 'Accessories', count: '45+ Crafts', desc: 'Sarbloh Kadas & Kirpans' },
+    { name: 'New Accessories', count: '45+ Crafts', desc: 'Sarbloh Kadas & Kirpans' },
     { name: 'Literature', count: '10+ Scholars', desc: 'History, Philosophy & Hymns' },
     { name: 'Apparel', count: '15+ Sewn', desc: 'Khalsa Warrior Cholas' }
   ];
 
   return (
     <div className="page-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
-      
+
       {/* 1. Hero Section */}
-      <section 
-        style={{ 
-          background: 'linear-gradient(135deg, var(--color-navy-dark) 0%, var(--color-navy) 100%)', 
-          color: '#FFFFFF', 
+      <section
+        style={{
+          background: 'linear-gradient(135deg, var(--color-navy-dark) 0%, var(--color-navy) 100%)',
+          color: '#FFFFFF',
           padding: '6rem 0 5rem 0',
           position: 'relative',
           overflow: 'hidden',
@@ -43,17 +43,17 @@ const Home = () => {
         <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '450px', height: '450px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }}></div>
 
         <div className="container" style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '3rem', alignItems: 'center' }}>
-          
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 5 }}>
             <div className="badge badge-gold" style={{ alignSelf: 'flex-start', padding: '0.4rem 0.8rem' }}>
               <Sparkles size={12} style={{ marginRight: '0.25rem' }} />
               Modern • Gamified • Multi-Country
             </div>
-            
+
             <h2 style={{ fontSize: '3.2rem', color: '#FFFFFF', fontWeight: '800', lineHeight: '1.15', letterSpacing: '-1px' }}>
               Elevate Your Identity with <span style={{ color: 'var(--color-gold)', background: 'linear-gradient(to right, #FFE082, #D4AF37)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Sikh Street</span>
             </h2>
-            
+
             <p style={{ color: '#BAC7D5', fontSize: '1.1rem', lineHeight: '1.6', maxWidth: '580px' }}>
               Discover handcrafted Kada accessories, premium double-width Voile turbans, historical literature, and traditional apparel. Supporting verified global artisan vendors.
             </p>
@@ -63,9 +63,9 @@ const Home = () => {
                 Shop the Catalog
                 <ArrowRight size={18} />
               </button>
-              <button 
-                onClick={() => setRoute('rewards')} 
-                className="btn btn-outline-gold btn-lg" 
+              <button
+                onClick={() => setRoute('rewards')}
+                className="btn btn-outline-gold btn-lg"
                 style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#FFFFFF' }}
                 onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.05)'}
                 onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
@@ -91,15 +91,15 @@ const Home = () => {
                   const isActive = day <= streakDays;
                   const isToday = day === streakDays && !streakClaimed;
                   return (
-                    <div 
+                    <div
                       key={day}
-                      style={{ 
-                        flex: 1, 
+                      style={{
+                        flex: 1,
                         minWidth: '50px',
-                        background: isToday ? 'rgba(212,175,55,0.2)' : isActive ? 'var(--color-navy-light)' : 'rgba(255,255,255,0.05)', 
+                        background: isToday ? 'rgba(212,175,55,0.2)' : isActive ? 'var(--color-navy-light)' : 'rgba(255,255,255,0.05)',
                         border: isToday ? '2px solid var(--color-gold)' : isActive ? '1px solid var(--color-navy)' : '1px solid rgba(255,255,255,0.1)',
-                        padding: '0.75rem 0.25rem', 
-                        borderRadius: 'var(--border-radius-sm)', 
+                        padding: '0.75rem 0.25rem',
+                        borderRadius: 'var(--border-radius-sm)',
                         textAlign: 'center',
                         color: isActive ? '#FFF' : 'rgba(255,255,255,0.4)',
                         transition: 'var(--transition-smooth)'
@@ -123,17 +123,17 @@ const Home = () => {
                   <span style={{ color: '#FFFFFF', fontWeight: 'bold' }}>+15 Sikh Coins</span>
                 </div>
                 {streakClaimed ? (
-                  <button 
-                    disabled 
-                    className="btn btn-secondary" 
+                  <button
+                    disabled
+                    className="btn btn-secondary"
                     style={{ width: '100%', cursor: 'not-allowed', color: 'var(--color-text-secondary)', background: 'rgba(255,255,255,0.1)' }}
                   >
                     Claimed Today • Streak Extended
                   </button>
                 ) : (
-                  <button 
+                  <button
                     onClick={handleClaimStreak}
-                    className="btn btn-gold pulse-gold-button" 
+                    className="btn btn-gold pulse-gold-button"
                     style={{ width: '100%', fontWeight: '700' }}
                   >
                     <Calendar size={16} />
@@ -156,7 +156,7 @@ const Home = () => {
 
         <div className="grid-4">
           {categories.map((cat, idx) => (
-            <div 
+            <div
               key={idx}
               className="card"
               onClick={() => setRoute('catalog')}
@@ -183,15 +183,15 @@ const Home = () => {
 
       {/* 3. Rewards Banner Callout */}
       <section className="container" style={{ margin: '2rem auto' }}>
-        <div 
-          className="card card-gold flex-between" 
-          style={{ 
-            padding: '2.5rem', 
-            borderRadius: 'var(--border-radius-lg)', 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
-            gap: '2.5rem', 
-            alignItems: 'center' 
+        <div
+          className="card card-gold flex-between"
+          style={{
+            padding: '2.5rem',
+            borderRadius: 'var(--border-radius-lg)',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '2.5rem',
+            alignItems: 'center'
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -222,7 +222,7 @@ const Home = () => {
         <h3 className="section-title">Trending Discoveries</h3>
         <div className="grid-3" style={{ marginTop: '2rem' }}>
           {featuredProducts.map((p) => (
-            <div 
+            <div
               key={p.id}
               className="card"
               style={{ display: 'flex', flexDirection: 'column', gap: '1rem', position: 'relative' }}
@@ -234,7 +234,7 @@ const Home = () => {
               </span>
 
               {/* Product Visual */}
-              <div 
+              <div
                 onClick={() => setRoute('product-details', p.id)}
                 style={{ height: '220px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', cursor: 'pointer', background: 'var(--color-navy)' }}
               >
@@ -251,7 +251,7 @@ const Home = () => {
                     From {p.origin}
                   </span>
                 </div>
-                <h4 
+                <h4
                   onClick={() => setRoute('product-details', p.id)}
                   style={{ fontSize: '1.1rem', fontWeight: '800', cursor: 'pointer', color: 'var(--color-navy)', lineHeight: '1.3' }}
                 >
@@ -270,7 +270,7 @@ const Home = () => {
                 <span style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--color-navy)' }}>
                   {convertPrice(p.price)}
                 </span>
-                <button 
+                <button
                   onClick={() => addToCart(p)}
                   className="btn btn-gold btn-sm"
                   style={{ borderRadius: 'var(--border-radius-sm)' }}
