@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react';
-import { AppContext, getProductSvg } from '../context/AppContext';
-import { ArrowLeft, Star, ShoppingCart, ShieldCheck, Truck, Sparkles } from 'lucide-react';
+import { AppContext, getProductSvg, renderProductImage } from '../context/AppContext';
+import { ArrowLeft, Star, ShoppingCart, ShieldCheck, Truck, Sparkles, MessageSquare } from 'lucide-react';
 
 const ProductDetails = () => {
-  const { selectedProductId, products, setRoute, addToCart, convertPrice } = useContext(AppContext);
+  const { selectedProductId, products, setRoute, addToCart, convertPrice, sendDirectMessage, userRole, setActiveChatVendor } = useContext(AppContext);
   const [quantity, setQuantity] = useState(1);
-  
+
   // Custom interactive turban color state
   const [turbanColor, setTurbanColor] = useState('#9E2346'); // Default Royal Crimson
 
@@ -47,12 +47,18 @@ const ProductDetails = () => {
     alert(`Successfully added ${quantity}x ${productWithMeta.title} to your cart!`);
   };
 
+  const handleContactVendor = () => {
+    const greetingText = `Waheguru Ji Ka Khalsa! I am interested in your listing: "${product.title}". Could you please provide more details on shipping or customization?`;
+    sendDirectMessage('customer', 'Sejalpreet Singh', product.vendor, greetingText);
+    setActiveChatVendor(product.vendor);
+  };
+
   return (
     <div className="container page-fade-in" style={{ paddingTop: '2.5rem' }}>
-      
+
       {/* Back link */}
-      <button 
-        onClick={() => setRoute('catalog')} 
+      <button
+        onClick={() => setRoute('catalog')}
         className="btn btn-secondary btn-sm"
         style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '2rem', border: '1px solid var(--color-beige-dark)' }}
       >
@@ -62,15 +68,15 @@ const ProductDetails = () => {
 
       {/* Main detail section */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '3rem', alignItems: 'start' }}>
-        
+
         {/* Left Column: Visual representation */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          
-          <div 
-            style={{ 
-              height: '420px', 
-              borderRadius: 'var(--border-radius-lg)', 
-              overflow: 'hidden', 
+
+          <div
+            style={{
+              height: '420px',
+              borderRadius: 'var(--border-radius-lg)',
+              overflow: 'hidden',
               background: 'var(--color-navy)',
               boxShadow: 'var(--box-shadow-premium)',
               border: '2px solid var(--color-beige-dark)',
@@ -80,7 +86,7 @@ const ProductDetails = () => {
               justifyContent: 'center'
             }}
           >
-            {getProductSvg(product.category, product.title, product.category === 'Turbans' ? turbanColor : product.themeColor)}
+            {renderProductImage(product, product.category === 'Turbans' ? turbanColor : null)}
           </div>
 
           {/* Color Customizer Widget (only for Turbans) */}
@@ -93,7 +99,7 @@ const ProductDetails = () => {
               <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.15rem' }}>
                 Select a shade below. Our artisan weavers will dye the double voile fabric to match your choice.
               </p>
-              
+
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.75rem' }}>
                 {turbanSwatches.map((swatch, idx) => (
                   <button
@@ -120,7 +126,7 @@ const ProductDetails = () => {
 
         {/* Right Column: Information & checkout actions */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          
+
           <div>
             <div className="flex-between">
               <span className="badge badge-gold">{product.category}</span>
@@ -128,7 +134,7 @@ const ProductDetails = () => {
                 Origin: <strong>{product.origin}</strong>
               </span>
             </div>
-            
+
             <h2 style={{ fontSize: '2.2rem', fontWeight: '800', color: 'var(--color-navy)', marginTop: '0.5rem', lineHeight: '1.2' }}>
               {product.title}
             </h2>
@@ -159,6 +165,18 @@ const ProductDetails = () => {
             </p>
           </div>
 
+          <div>
+            <h4 style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--color-navy)', marginBottom: '0.5rem' }}>Specifications</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'var(--color-bg)', padding: '1rem', borderRadius: 'var(--border-radius-sm)', border: '1px solid var(--color-beige-dark)', fontSize: '0.8rem' }}>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Category:</span> <strong>{product.category}</strong></div>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Design Style:</span> <strong>{product.design || 'Traditional Craft'}</strong></div>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Material:</span> <strong>{product.material || 'Artisan Grade'}</strong></div>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Size / Dimensions:</span> <strong>{product.size || 'Standard size'}</strong></div>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Color Name:</span> <strong style={{ textTransform: 'capitalize' }}>{product.colorName || (product.category === 'Turbans' ? turbanSwatches.find(s => s.hex === turbanColor)?.label : product.themeColor)}</strong></div>
+              <div><span style={{ color: 'var(--color-text-secondary)' }}>Country of Origin:</span> <strong>{product.origin}</strong></div>
+            </div>
+          </div>
+
           {/* Benefits Bulletins */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid var(--color-beige-dark)', borderBottom: '1px solid var(--color-beige-dark)', padding: '1rem 0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
@@ -169,14 +187,20 @@ const ProductDetails = () => {
               <ShieldCheck size={16} style={{ color: 'var(--color-gold-hover)' }} />
               <span>Verified Artisan Vendor: <strong>{product.vendor}</strong> (Sikh Street Approved).</span>
             </div>
+            {userRole === 'customer' && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
+                <MessageSquare size={16} style={{ color: 'var(--color-gold-hover)' }} />
+                <span>Need custom sizing or help? <button onClick={handleContactVendor} style={{ background: 'none', border: 'none', padding: 0, color: 'var(--color-navy)', textDecoration: 'underline', fontWeight: 'bold', cursor: 'pointer' }}>Message this Seller</button>.</span>
+              </div>
+            )}
           </div>
 
           {/* Add to Cart Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginTop: '0.5rem' }}>
-            
+
             {/* Quantity Selector */}
             <div style={{ display: 'flex', alignItems: 'center', border: '1px solid var(--color-beige-dark)', borderRadius: 'var(--border-radius-sm)', background: '#FFFFFF' }}>
-              <button 
+              <button
                 onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                 style={{ padding: '0.5rem 1rem', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}
               >
@@ -185,7 +209,7 @@ const ProductDetails = () => {
               <span style={{ padding: '0.5rem 0.5rem', minWidth: '30px', textAlign: 'center', fontWeight: 'bold', fontSize: '0.95rem' }}>
                 {quantity}
               </span>
-              <button 
+              <button
                 onClick={() => setQuantity(prev => Math.min(product.stock, prev + 1))}
                 style={{ padding: '0.5rem 1rem', border: 'none', background: 'none', cursor: 'pointer', fontWeight: 'bold' }}
               >
@@ -194,9 +218,9 @@ const ProductDetails = () => {
             </div>
 
             {/* Main Add CTA */}
-            <button 
+            <button
               onClick={handleAddToCart}
-              className="btn btn-gold" 
+              className="btn btn-gold"
               style={{ flex: 1, padding: '0.9rem' }}
             >
               <ShoppingCart size={18} />
@@ -216,7 +240,7 @@ const ProductDetails = () => {
                 <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Complete your traditional style with this handpicked accessory.</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={() => setRoute('product-details', aiRecommended.id)}
               className="btn btn-outline-gold btn-sm"
             >

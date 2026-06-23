@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { AppContext, getProductSvg } from '../context/AppContext';
+import { AppContext, getProductSvg, renderProductImage } from '../context/AppContext';
 import { ArrowRight, Sparkles, Trophy, Calendar, Gift, Star, ShoppingCart } from 'lucide-react';
 
 const Home = () => {
@@ -238,7 +238,7 @@ const Home = () => {
                 onClick={() => setRoute('product-details', p.id)}
                 style={{ height: '220px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', cursor: 'pointer', background: 'var(--color-navy)' }}
               >
-                {getProductSvg(p.category, p.title, p.themeColor)}
+                {renderProductImage(p)}
               </div>
 
               {/* Product Details info */}

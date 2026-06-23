@@ -3,7 +3,7 @@ import { AppContext } from '../context/AppContext';
 import { Shield, Settings, Users, Landmark, Coins, Check, AlertCircle } from 'lucide-react';
 
 const AdminPanel = () => {
-  const { adminRules, setAdminRules, products, convertPrice } = useContext(AppContext);
+  const { adminRules, setAdminRules, products, convertPrice, approveVendorRequest, vendorPayouts, setVendorPayouts } = useContext(AppContext);
   const [commRate, setCommRate] = useState(adminRules.commissionRate);
   const [multiplier, setMultiplier] = useState(adminRules.coinMultiplier);
 
@@ -27,13 +27,15 @@ const AdminPanel = () => {
   };
 
   const handleApproveVendor = (id) => {
-    setAdminRules((prev) => ({
-      ...prev,
-      vendorApprovals: prev.vendorApprovals.map((v) => 
-        v.id === id ? { ...v, status: 'approved' } : v
-      )
-    }));
+    approveVendorRequest(id);
     alert("Vendor profile approved! Access token granted.");
+  };
+
+  const handleApprovePayout = (payoutId) => {
+    setVendorPayouts((prev) => 
+      prev.map((p) => p.id === payoutId ? { ...p, status: 'Completed' } : p)
+    );
+    alert("Payout approved! Payout funds successfully wired to vendor.");
   };
 
   // Mock platform aggregate reports
@@ -143,57 +145,133 @@ const AdminPanel = () => {
           </form>
         </div>
 
-        {/* Right column: Vendor registration list */}
-        <div className="card" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-beige-dark)', paddingBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Users size={18} style={{ color: 'var(--color-gold-hover)' }} />
-            Artisan Registration Approvals
-          </h3>
+        {/* Right column: Vendor registration list & payouts */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          
+          <div className="card" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-beige-dark)', paddingBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Users size={18} style={{ color: 'var(--color-gold-hover)' }} />
+              Artisan Registration Approvals
+            </h3>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {adminRules.vendorApprovals.map((v) => (
-              <div 
-                key={v.id}
-                style={{ 
-                  padding: '1rem', 
-                  border: '1px solid var(--color-beige-dark)', 
-                  borderRadius: 'var(--border-radius-sm)',
-                  backgroundColor: 'var(--color-bg)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.75rem'
-                }}
-              >
-                <div className="flex-between">
-                  <div>
-                    <h4 style={{ fontSize: '0.95rem', fontWeight: '800' }}>{v.name}</h4>
-                    <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.15rem' }}>
-                      Category: {v.category} • Country: {v.country}
-                    </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {adminRules.vendorApprovals.map((v) => (
+                <div 
+                  key={v.id}
+                  style={{ 
+                    padding: '1rem', 
+                    border: '1px solid var(--color-beige-dark)', 
+                    borderRadius: 'var(--border-radius-sm)',
+                    backgroundColor: 'var(--color-bg)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem'
+                  }}
+                >
+                  <div className="flex-between">
+                    <div>
+                      <h4 style={{ fontSize: '0.95rem', fontWeight: '800' }}>{v.name}</h4>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)', marginTop: '0.15rem' }}>
+                        Category: {v.category} • Country: {v.country}
+                      </p>
+                      {v.email && (
+                        <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>
+                          Contact: {v.email} | {v.phone}
+                        </p>
+                      )}
+                      {v.docName && (
+                        <p style={{ fontSize: '0.7rem', color: 'var(--color-blue-accent)', fontWeight: '600', marginTop: '0.2rem' }}>
+                          📄 Document: {v.docName} (Uploaded)
+                        </p>
+                      )}
+                    </div>
+                    <span className={`badge ${v.status === 'approved' ? 'badge-green' : 'badge-gold'}`} style={{ fontSize: '0.65rem' }}>
+                      {v.status}
+                    </span>
                   </div>
-                  <span className={`badge ${v.status === 'approved' ? 'badge-green' : 'badge-gold'}`} style={{ fontSize: '0.65rem' }}>
-                    {v.status}
-                  </span>
+
+                  {v.status === 'pending' ? (
+                    <button 
+                      onClick={() => handleApproveVendor(v.id)}
+                      className="btn btn-gold btn-sm"
+                      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', width: '100%' }}
+                    >
+                      <Check size={14} />
+                      Approve Artisan Profile
+                    </button>
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 'bold', justifyContent: 'center' }}>
+                      <Check size={14} />
+                      Vendor approved and active
+                    </div>
+                  )}
                 </div>
-
-                {v.status === 'pending' ? (
-                  <button 
-                    onClick={() => handleApproveVendor(v.id)}
-                    className="btn btn-gold btn-sm"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem', width: '100%' }}
-                  >
-                    <Check size={14} />
-                    Approve Artisan Profile
-                  </button>
-                ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 'bold', justifyContent: 'center' }}>
-                    <Check size={14} />
-                    Vendor approved and active
-                  </div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {/* Payout Approvals Panel */}
+          <div className="card" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.2rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-beige-dark)', paddingBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Landmark size={18} style={{ color: 'var(--color-gold-hover)' }} />
+              Vendor Payout Disbursements
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {vendorPayouts.length === 0 ? (
+                <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', textAlign: 'center', padding: '1rem 0' }}>
+                  No payout requests recorded.
+                </p>
+              ) : (
+                vendorPayouts.map((p) => (
+                  <div 
+                    key={p.id}
+                    style={{
+                      padding: '1rem',
+                      border: '1px solid var(--color-beige-dark)',
+                      borderRadius: 'var(--border-radius-sm)',
+                      backgroundColor: 'var(--color-bg)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    <div className="flex-between">
+                      <div>
+                        <h4 style={{ fontSize: '0.95rem', fontWeight: '800' }}>{p.vendor}</h4>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
+                          Reference ID: <strong>{p.id}</strong> • Date: {p.date}
+                        </p>
+                      </div>
+                      <span className={`badge ${p.status === 'Completed' ? 'badge-green' : 'badge-gold'}`} style={{ fontSize: '0.65rem' }}>
+                        {p.status}
+                      </span>
+                    </div>
+
+                    <div className="flex-between" style={{ marginTop: '0.25rem' }}>
+                      <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--color-navy)' }}>
+                        {convertPrice(p.amount)}
+                      </span>
+                      {p.status === 'Processing' ? (
+                        <button 
+                          onClick={() => handleApprovePayout(p.id)}
+                          className="btn btn-gold btn-sm"
+                          style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem' }}
+                        >
+                          Release Payout
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: '0.75rem', color: 'var(--color-success)', fontWeight: 'bold' }}>
+                          Disbursed
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+
         </div>
 
       </div>

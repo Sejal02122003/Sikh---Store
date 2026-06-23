@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { AppContext, getProductSvg } from '../context/AppContext';
+import { AppContext, renderProductImage } from '../context/AppContext';
 import { Trash2, ShoppingBag, Percent, ShieldCheck, Ticket, CreditCard, Coins } from 'lucide-react';
 
 const Cart = () => {
@@ -13,7 +13,8 @@ const Cart = () => {
     adminRules, 
     coupons, 
     setCoins,
-    setRoute 
+    setRoute,
+    setOrders
   } = useContext(AppContext);
 
   const [appliedCoupon, setAppliedCoupon] = useState('');
@@ -57,6 +58,21 @@ const Cart = () => {
     
     // Add coins to wallet
     setCoins((prev) => prev + pointsWon);
+
+    // Create dynamic orders for each cart item
+    const newOrders = cart.map(item => ({
+      id: (Math.floor(Math.random() * 9000) + 1000).toString(),
+      product: item.product.title,
+      qty: item.quantity,
+      destination: activeEst.country,
+      status: 'pending',
+      vendor: item.product.vendor || 'Khalsa Steel Crafts',
+      date: new Date().toISOString().split('T')[0],
+      price: item.product.price,
+      customerName: 'Sejalpreet Singh'
+    }));
+
+    setOrders((prev) => [...prev, ...newOrders]);
     
     // Show checkout success modal & empty cart
     setCheckoutSuccess(true);
@@ -153,7 +169,7 @@ const Cart = () => {
               >
                 {/* Image */}
                 <div style={{ height: '80px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', background: 'var(--color-navy)' }}>
-                  {getProductSvg(item.product.category, item.product.title, item.product.themeColor)}
+                  {renderProductImage(item.product)}
                 </div>
 
                 {/* Title & Metadata */}

@@ -3,6 +3,7 @@ import { AppProvider, AppContext } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AIHelper from './components/AIHelper';
+import CustomerChatDrawer from './components/CustomerChatDrawer';
 
 import Home from './pages/Home';
 import Catalog from './pages/Catalog';
@@ -12,6 +13,7 @@ import Rewards from './pages/Rewards';
 import VendorDashboard from './pages/VendorDashboard';
 import InventoryManagement from './pages/InventoryManagement';
 import AdminPanel from './pages/AdminPanel';
+import VendorRegistration from './pages/VendorRegistration';
 
 import './App.css';
 
@@ -37,6 +39,8 @@ const AppContent = () => {
         return <InventoryManagement />;
       case 'admin':
         return <AdminPanel />;
+      case 'vendor-register':
+        return <VendorRegistration />;
       default:
         return <Home />;
     }
@@ -46,17 +50,20 @@ const AppContent = () => {
     <div className="app-container">
       {/* Dynamic top header bar */}
       <Navbar />
-      
+
       {/* Target route container */}
       <main className="main-content">
         {renderActiveView()}
       </main>
-      
+
       {/* Global footer branding & details */}
       <Footer />
-      
+
       {/* AI Floating Assistant Chatbot (Seva AI) */}
       <AIHelper />
+
+      {/* Customer Floating direct messaging portal */}
+      <CustomerChatDrawer />
     </div>
   );
 };

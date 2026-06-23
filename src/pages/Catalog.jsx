@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { AppContext, getProductSvg } from '../context/AppContext';
+import { AppContext, renderProductImage } from '../context/AppContext';
 import { Search, SlidersHorizontal, Star, ShoppingCart, Info, Globe } from 'lucide-react';
 
 const Catalog = () => {
@@ -204,7 +204,7 @@ const Catalog = () => {
                       onClick={() => setRoute('product-details', product.id)}
                       style={{ height: '200px', borderRadius: 'var(--border-radius-sm)', overflow: 'hidden', cursor: 'pointer', background: 'var(--color-navy)' }}
                     >
-                      {getProductSvg(product.category, product.title, product.themeColor)}
+                      {renderProductImage(product)}
                     </div>
 
                     {/* Details Info */}

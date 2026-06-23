@@ -378,6 +378,17 @@ header {
   backdrop-filter: blur(8px);
 }
 
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  transition: var(--transition-smooth);
+}
+
 /* Gamified Points Banner */
 .points-pill {
   background: radial-gradient(circle at 10% 20%, rgb(255, 200, 50) 0%, rgb(212, 175, 55) 90%);
@@ -394,6 +405,27 @@ header {
 }
 
 /* Responsive fixes */
+@media (max-width: 1100px) {
+  header nav {
+    gap: 1rem !important;
+  }
+  header .points-pill {
+    display: none !important; /* Hide coins pill on medium screens to prevent navbar congestion */
+  }
+}
+
+@media (max-width: 860px) {
+  header nav {
+    display: none !important; /* Hide middle navigation links to prevent wrap/squishing on tablets */
+  }
+  header .btn-outline-gold, header .header-container button.btn-secondary {
+    display: none !important; /* Hide action buttons to save space */
+  }
+  .header-container {
+    padding: 0 1rem;
+  }
+}
+
 @media (max-width: 768px) {
   .section-title, .section-title-center {
     font-size: 1.75rem;

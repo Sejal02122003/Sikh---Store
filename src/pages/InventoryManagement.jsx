@@ -1,9 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AppContext } from '../context/AppContext';
-import { ArrowLeft, PackagePlus, Info } from 'lucide-react';
+import { ArrowLeft, PackagePlus, Info, Save, Upload } from 'lucide-react';
 
 const InventoryManagement = () => {
-  const { addVendorProduct, setRoute } = useContext(AppContext);
+  const { 
+    addVendorProduct, 
+    updateVendorProduct, 
+    selectedProductId, 
+    setSelectedProductId, 
+    products, 
+    vendors, 
+    setRoute 
+  } = useContext(AppContext);
 
   // Form Fields State
   const [title, setTitle] = useState('');
@@ -15,15 +23,52 @@ const InventoryManagement = () => {
   const [vendor, setVendor] = useState('Khalsa Steel Crafts');
   const [themeColor, setThemeColor] = useState('#D4AF37'); // Default gold
 
+  // New detailed specification states
+  const [design, setDesign] = useState('');
+  const [material, setMaterial] = useState('');
+  const [size, setSize] = useState('');
+  const [colorName, setColorName] = useState('');
+  const [image, setImage] = useState(null); // Base64 image
+  const [photoUploading, setPhotoUploading] = useState(false);
+
   const categories = ['Turbans', 'Accessories', 'Literature', 'Apparel'];
   const origins = ['India', 'Canada', 'United Kingdom'];
-  const vendors = [
-    'Khalsa Steel Crafts',
-    'Amritsar Turban House',
-    'Shastar Mandir',
-    'Sikh Heritage Books',
-    'Singhs Outfitters'
-  ];
+
+  // Check if we are in Edit Mode
+  const isEditMode = selectedProductId !== null;
+  const productToEdit = products.find(p => p.id === selectedProductId);
+
+  // Load existing product details if editing
+  useEffect(() => {
+    if (isEditMode && productToEdit) {
+      setTitle(productToEdit.title);
+      setPrice(productToEdit.price.toString());
+      setCategory(productToEdit.category);
+      setOrigin(productToEdit.origin);
+      setDescription(productToEdit.description);
+      setStock(productToEdit.stock.toString());
+      setVendor(productToEdit.vendor);
+      setThemeColor(productToEdit.themeColor || '#D4AF37');
+      setDesign(productToEdit.design || '');
+      setMaterial(productToEdit.material || '');
+      setSize(productToEdit.size || '');
+      setColorName(productToEdit.colorName || '');
+      setImage(productToEdit.image || null);
+    }
+  }, [isEditMode, productToEdit]);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPhotoUploading(true);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+        setPhotoUploading(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -46,8 +91,7 @@ const InventoryManagement = () => {
       return;
     }
 
-    // Call Context action
-    addVendorProduct({
+    const productFields = {
       title,
       price: priceNum,
       category,
@@ -55,10 +99,33 @@ const InventoryManagement = () => {
       description,
       stock: stockNum,
       vendor,
-      themeColor
-    });
+      themeColor,
+      design,
+      material,
+      size,
+      colorName,
+      image
+    };
 
-    alert("Success! Your product has been listed in the catalog.");
+    if (isEditMode) {
+      updateVendorProduct(selectedProductId, productFields);
+      alert("Success! Your product listing has been updated.");
+    } else {
+      addVendorProduct(productFields);
+      alert("Success! Your product has been listed in the catalog.");
+    }
+
+    // Reset edit pointer & route back
+    if (setSelectedProductId) {
+      setSelectedProductId(null);
+    }
+    setRoute('vendor');
+  };
+
+  const handleCancel = () => {
+    if (setSelectedProductId) {
+      setSelectedProductId(null);
+    }
     setRoute('vendor');
   };
 
@@ -67,7 +134,7 @@ const InventoryManagement = () => {
       
       {/* Return link */}
       <button 
-        onClick={() => setRoute('vendor')}
+        onClick={handleCancel}
         className="btn btn-secondary btn-sm"
         style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', marginBottom: '2.5rem', border: '1px solid var(--color-beige-dark)' }}
       >
@@ -83,9 +150,13 @@ const InventoryManagement = () => {
             <PackagePlus size={22} />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>Add Product to Marketplace</h2>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>
+              {isEditMode ? 'Modify Product Listing' : 'Add Product to Marketplace'}
+            </h2>
             <p style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)' }}>
-              Fill in detailed item specifications. Approved listings go live immediately for global buyers.
+              {isEditMode 
+                ? 'Update listing specifications. Updated details will propagate immediately to global buyers.' 
+                : 'Fill in detailed item specifications. Approved listings go live immediately for global buyers.'}
             </p>
           </div>
         </div>
@@ -154,7 +225,56 @@ const InventoryManagement = () => {
 
           </div>
 
-          {/* Row 3: Category, Origin & Vendor switcher */}
+          {/* Row 3: Design, Material, Size, Color Name */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+            
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Design Style / Pattern</label>
+              <input 
+                type="text" 
+                value={design}
+                onChange={(e) => setDesign(e.target.value)}
+                placeholder="e.g. Amritsari Double Wrap"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Material Composition</label>
+              <input 
+                type="text" 
+                value={material}
+                onChange={(e) => setMaterial(e.target.value)}
+                placeholder="e.g. F74 Voile Cotton"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Dimensions / Size</label>
+              <input 
+                type="text" 
+                value={size}
+                onChange={(e) => setSize(e.target.value)}
+                placeholder="e.g. 6.5 Meters"
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Color Name</label>
+              <input 
+                type="text" 
+                value={colorName}
+                onChange={(e) => setColorName(e.target.value)}
+                placeholder="e.g. Saffron Yellow"
+                className="form-input"
+              />
+            </div>
+
+          </div>
+
+          {/* Row 4: Category, Origin & Vendor switcher */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
             
             <div className="form-group" style={{ marginBottom: 0 }}>
@@ -198,7 +318,55 @@ const InventoryManagement = () => {
 
           </div>
 
-          {/* Row 4: Description */}
+          {/* Row 5: Photo Upload Simulator */}
+          <div className="form-group" style={{ marginBottom: 0 }}>
+            <label className="form-label">Product Image / Photo</label>
+            <div style={{ 
+              display: 'flex', 
+              gap: '1.5rem', 
+              alignItems: 'center', 
+              border: '1px solid var(--color-beige-dark)', 
+              padding: '1.25rem', 
+              borderRadius: 'var(--border-radius-sm)', 
+              background: 'var(--color-bg)' 
+            }}>
+              <div style={{ 
+                width: '100px', 
+                height: '100px', 
+                borderRadius: '8px', 
+                border: '2px dashed var(--color-beige-dark)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center', 
+                overflow: 'hidden', 
+                background: '#FFFFFF', 
+                flexShrink: 0 
+              }}>
+                {image ? (
+                  <img src={image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem', color: 'var(--color-text-secondary)', fontSize: '0.65rem' }}>
+                    <Upload size={18} />
+                    <span>No Photo</span>
+                  </div>
+                )}
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handlePhotoUpload} 
+                  style={{ fontSize: '0.8rem', color: 'var(--color-navy)' }} 
+                />
+                <p style={{ fontSize: '0.7rem', color: 'var(--color-text-secondary)', margin: 0 }}>
+                  Select a product picture from your computer to see it immediately in the store.
+                </p>
+                {photoUploading && <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-hover)', fontWeight: 'bold' }}>Loading photo data...</span>}
+              </div>
+            </div>
+          </div>
+
+          {/* Row 6: Description */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Product Description *</label>
             <textarea 
@@ -224,7 +392,7 @@ const InventoryManagement = () => {
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
             <button 
               type="button"
-              onClick={() => setRoute('vendor')}
+              onClick={handleCancel}
               className="btn btn-secondary"
             >
               Cancel
@@ -233,8 +401,10 @@ const InventoryManagement = () => {
             <button 
               type="submit" 
               className="btn btn-gold"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
             >
-              Submit Listing
+              {isEditMode ? <Save size={16} /> : null}
+              {isEditMode ? 'Update Listing' : 'Submit Listing'}
             </button>
           </div>
 

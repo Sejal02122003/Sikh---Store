@@ -117,6 +117,14 @@ export const getProductSvg = (category, title, themeColor = '#D4AF37') => {
   }
 };
 
+export const renderProductImage = (p, overrideColor = null) => {
+  if (p && p.image) {
+    return <img src={p.image} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />;
+  }
+  const color = overrideColor || (p ? p.themeColor : '#D4AF37');
+  return getProductSvg(p ? p.category : '', p ? p.title : '', color);
+};
+
 const initialProducts = [
   {
     id: 1,
@@ -129,6 +137,11 @@ const initialProducts = [
     vendor: 'Amritsar Turban House',
     origin: 'India',
     stock: 45,
+    material: 'F74 Voile Cotton',
+    size: '6.5 Meters',
+    design: 'Royal Amritsari Wrap',
+    colorName: 'Royal Crimson',
+    image: null
   },
   {
     id: 2,
@@ -141,6 +154,11 @@ const initialProducts = [
     vendor: 'Khalsa Steel Crafts',
     origin: 'India',
     stock: 30,
+    material: 'Pure Iron (Sarbloh)',
+    size: '2.8 Inches (Standard)',
+    design: 'Classic Hand-Forged Circular Ring',
+    colorName: 'Metallic Dark Grey',
+    image: null
   },
   {
     id: 3,
@@ -153,6 +171,11 @@ const initialProducts = [
     vendor: 'Shastar Mandir',
     origin: 'India',
     stock: 8,
+    material: 'Damascus Steel & Brass',
+    size: '9 Inches',
+    design: 'Curved Ceremonial blade with Brass Hilt',
+    colorName: 'Gold & Steel',
+    image: null
   },
   {
     id: 4,
@@ -165,6 +188,11 @@ const initialProducts = [
     vendor: 'Sikh Heritage Books',
     origin: 'United Kingdom',
     stock: 20,
+    material: 'Hardcover Gold-Gilt Paper',
+    size: 'Standard A5 Hardback',
+    design: 'Premium Golden Khanda Embossed Cover',
+    colorName: 'Burgundy & Gold',
+    image: null
   },
   {
     id: 5,
@@ -177,6 +205,11 @@ const initialProducts = [
     vendor: 'Singhs Outfitters',
     origin: 'India',
     stock: 15,
+    material: 'Sturdy Organic Cotton',
+    size: 'Medium (42)',
+    design: 'Warrior Cut with Pockets & Side Slits',
+    colorName: 'Warrior Crimson',
+    image: null
   },
   {
     id: 6,
@@ -189,6 +222,11 @@ const initialProducts = [
     vendor: 'Khalsa Steel Crafts',
     origin: 'Canada',
     stock: 10,
+    material: 'Brass & Faux Ruby Gemstones',
+    size: '3.5 Inches',
+    design: 'Plumed Plated Plaque with Faux Plumes',
+    colorName: 'Gold & Red Plume',
+    image: null
   }
 ];
 
@@ -196,6 +234,7 @@ export const AppProvider = ({ children }) => {
   // Navigation Routing States
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const [activeChatVendor, setActiveChatVendor] = useState(null);
 
   // Core Data States
   const [products, setProducts] = useState(() => {
@@ -210,6 +249,61 @@ export const AppProvider = ({ children }) => {
 
   // User Role State
   const [userRole, setUserRole] = useState('customer'); // customer, vendor, admin
+
+  const [isRegisteredSeller, setIsRegisteredSeller] = useState(() => {
+    return localStorage.getItem('sikh_street_is_registered_seller') === 'true';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_is_registered_seller', isRegisteredSeller.toString());
+  }, [isRegisteredSeller]);
+
+  // Vendors state
+  const [vendors, setVendors] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_vendors');
+    return saved ? JSON.parse(saved) : [
+      'Khalsa Steel Crafts',
+      'Amritsar Turban House',
+      'Shastar Mandir',
+      'Sikh Heritage Books',
+      'Singhs Outfitters'
+    ];
+  });
+
+  // Selected Active Vendor Profile
+  const [selectedVendor, setSelectedVendor] = useState(() => {
+    return localStorage.getItem('sikh_street_selected_vendor') || 'Khalsa Steel Crafts';
+  });
+
+  // Orders state
+  const [orders, setOrders] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_orders');
+    return saved ? JSON.parse(saved) : [
+      { id: '1092', product: 'Classic Hand-Forged Sarbloh Kada', qty: 2, destination: 'Canada', status: 'shipped', vendor: 'Khalsa Steel Crafts', date: '2026-06-22', price: 12.00, customerName: 'Harpreet Singh' },
+      { id: '1098', product: 'Damascus Steel Ceremonial Kirpan', qty: 1, destination: 'United Kingdom', status: 'pending', vendor: 'Shastar Mandir', date: '2026-06-23', price: 75.00, customerName: 'Rajinder Singh' },
+      { id: '1102', product: 'Royal Amritsari Turban (Dastar)', qty: 3, destination: 'India', status: 'pending', vendor: 'Amritsar Turban House', date: '2026-06-23', price: 15.00, customerName: 'Jaspreet Kaur' }
+    ];
+  });
+
+  // Payout History state
+  const [vendorPayouts, setVendorPayouts] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_payouts');
+    return saved ? JSON.parse(saved) : [
+      { id: 'PO-1001', vendor: 'Khalsa Steel Crafts', amount: 150.00, date: '2026-06-15', status: 'Completed' },
+      { id: 'PO-1002', vendor: 'Amritsar Turban House', amount: 320.00, date: '2026-06-18', status: 'Completed' }
+    ];
+  });
+
+  // Secure Messaging state
+  const [messages, setMessages] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_messages');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, sender: 'customer', senderName: 'Harpreet Singh', receiver: 'Khalsa Steel Crafts', text: 'Akal Sahai! Is the Sarbloh Kada pure iron or does it have alloy?', timestamp: '2026-06-23T10:15:00.000Z', isRead: false },
+      { id: 2, sender: 'Khalsa Steel Crafts', senderName: 'Khalsa Steel Crafts', receiver: 'Harpreet Singh', text: 'Waheguru ji ka Khalsa! It is hand-forged from 100% pure iron (Sarbloh) with no alloy. Smooth finished.', timestamp: '2026-06-23T10:20:00.000Z', isRead: true },
+      { id: 3, sender: 'customer', senderName: 'Jaspreet Kaur', receiver: 'Amritsar Turban House', text: 'Hello, will the Crimson Turban arrive in Canada within 6 days?', timestamp: '2026-06-23T11:00:00.000Z', isRead: false },
+      { id: 4, sender: 'Amritsar Turban House', senderName: 'Amritsar Turban House', receiver: 'Jaspreet Kaur', text: 'Yes, we ship via DHL Express for Canada. It usually takes 5-8 days, most orders arrive within 6 days.', timestamp: '2026-06-23T11:10:00.000Z', isRead: true }
+    ];
+  });
 
   // Currency Switcher States
   const [currency, setCurrency] = useState('USD');
@@ -240,13 +334,16 @@ export const AppProvider = ({ children }) => {
   const [spinAvailable, setSpinAvailable] = useState(true);
 
   // Admin Rules Configuration
-  const [adminRules, setAdminRules] = useState({
-    commissionRate: 5.0, // 5%
-    coinMultiplier: 1.0,  // 1x reward multiplier
-    vendorApprovals: [
-      { id: 1, name: 'Delhi Divinity Loom', category: 'Turbans', country: 'India', status: 'pending' },
-      { id: 2, name: 'Sikh Pride Apparel', category: 'Apparel', country: 'Canada', status: 'pending' }
-    ]
+  const [adminRules, setAdminRules] = useState(() => {
+    const saved = localStorage.getItem('sikh_street_admin_rules');
+    return saved ? JSON.parse(saved) : {
+      commissionRate: 5.0, // 5%
+      coinMultiplier: 1.0,  // 1x reward multiplier
+      vendorApprovals: [
+        { id: 1, name: 'Delhi Divinity Loom', category: 'Turbans', country: 'India', status: 'pending', email: 'loom@delhidivinity.com', docName: 'business_cert.pdf', bankAccount: 'IN-8930482048' },
+        { id: 2, name: 'Sikh Pride Apparel', category: 'Apparel', country: 'Canada', status: 'pending', email: 'pride@sikhapparel.ca', docName: 'canada_tax_reg.pdf', bankAccount: 'CA-9023482049' }
+      ]
+    };
   });
 
   // Sync state to local storage
@@ -265,6 +362,30 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('sikh_street_coupons', JSON.stringify(coupons));
   }, [coupons]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_vendors', JSON.stringify(vendors));
+  }, [vendors]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_selected_vendor', selectedVendor);
+  }, [selectedVendor]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_orders', JSON.stringify(orders));
+  }, [orders]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_payouts', JSON.stringify(vendorPayouts));
+  }, [vendorPayouts]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_messages', JSON.stringify(messages));
+  }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem('sikh_street_admin_rules', JSON.stringify(adminRules));
+  }, [adminRules]);
 
   // Dynamic router setter helper
   const setRoute = (tab, productId = null) => {
@@ -340,14 +461,98 @@ export const AppProvider = ({ children }) => {
     });
   };
 
+  const updateVendorProduct = (productId, updatedProduct) => {
+    setProducts((prev) =>
+      prev.map((p) => p.id === productId ? { ...p, ...updatedProduct } : p)
+    );
+  };
+
+  const deleteVendorProduct = (productId) => {
+    setProducts((prev) => prev.filter((p) => p.id !== productId));
+  };
+
+  const quickUpdateStock = (productId, newStock) => {
+    setProducts((prev) =>
+      prev.map((p) => p.id === productId ? { ...p, stock: Math.max(0, newStock) } : p)
+    );
+  };
+
+  const addVendorRegistrationRequest = (req) => {
+    setAdminRules((prev) => {
+      const nextId = prev.vendorApprovals.length > 0 ? Math.max(...prev.vendorApprovals.map((v) => v.id)) + 1 : 1;
+      return {
+        ...prev,
+        vendorApprovals: [...prev.vendorApprovals, { ...req, id: nextId, status: 'pending' }]
+      };
+    });
+  };
+
   // Admin Actions
   const approveVendorRequest = (id) => {
-    setAdminRules((prev) => ({
-      ...prev,
-      vendorApprovals: prev.vendorApprovals.map((v) =>
-        v.id === id ? { ...v, status: 'approved' } : v
-      ),
-    }));
+    let approvedName = '';
+    setAdminRules((prev) => {
+      const updated = prev.vendorApprovals.map((v) => {
+        if (v.id === id) {
+          approvedName = v.name;
+          return { ...v, status: 'approved' };
+        }
+        return v;
+      });
+      return {
+        ...prev,
+        vendorApprovals: updated,
+      };
+    });
+
+    if (approvedName) {
+      setVendors((prev) => {
+        if (prev.includes(approvedName)) return prev;
+        return [...prev, approvedName];
+      });
+    }
+  };
+
+  // Order processing actions
+  const updateOrderStatus = (orderId, nextStatus) => {
+    setOrders((prev) =>
+      prev.map((o) => o.id === orderId ? { ...o, status: nextStatus } : o)
+    );
+  };
+
+  // Payout actions
+  const requestPayout = (vendorName, amount) => {
+    setVendorPayouts((prev) => {
+      const nextId = `PO-${Date.now().toString().slice(-4)}`;
+      return [
+        ...prev,
+        {
+          id: nextId,
+          vendor: vendorName,
+          amount,
+          date: new Date().toISOString().split('T')[0],
+          status: 'Processing'
+        }
+      ];
+    });
+  };
+
+  // Send Direct Message action
+  const sendDirectMessage = (sender, senderName, receiver, text) => {
+    setMessages((prev) => {
+      const nextId = prev.length > 0 ? Math.max(...prev.map((m) => m.id)) + 1 : 1;
+      return [
+        ...prev,
+        {
+          id: nextId,
+          sender,
+          senderName,
+          receiver,
+          text,
+          timestamp: new Date().toISOString(),
+          isRead: false
+        }
+      ];
+    });
   };
 
   // Currency Converter helper
@@ -387,8 +592,27 @@ export const AppProvider = ({ children }) => {
         setAdminRules,
         claimCoupon,
         addVendorProduct,
+        updateVendorProduct,
+        deleteVendorProduct,
+        quickUpdateStock,
         approveVendorRequest,
         conversionRates,
+        vendors,
+        setVendors,
+        selectedVendor,
+        setSelectedVendor,
+        orders,
+        setOrders,
+        updateOrderStatus,
+        vendorPayouts,
+        requestPayout,
+        messages,
+        sendDirectMessage,
+        addVendorRegistrationRequest,
+        activeChatVendor,
+        setActiveChatVendor,
+        isRegisteredSeller,
+        setIsRegisteredSeller,
       }}
     >
       {children}
